@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using System;
+using System.IO;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace JWT.Serializers
 {
@@ -8,25 +10,40 @@ namespace JWT.Serializers
     /// </summary>
     public sealed class JsonNetSerializer : IJsonSerializer
     {
+        private readonly JsonSerializer _serializer;
+
         /// <summary>
-        /// Serialize the given object.
+        /// Creates a new instance of <see cref="JsonNetSerializer" />
         /// </summary>
-        /// <param name="obj">The object to serialize.</param>
-        /// <returns></returns>
-        public string Serialize(object obj)
+        /// <remarks>Uses <see cref="JsonSerializer.CreateDefault()" /> as internal serializer</remarks>
+        public JsonNetSerializer()
+            : this(JsonSerializer.CreateDefault())
         {
-            return JObject.FromObject(obj).ToString(Formatting.None);
         }
 
         /// <summary>
-        /// Deserialize the given string.
+        /// Creates a new instance of <see cref="JsonNetSerializer" />
         /// </summary>
-        /// <typeparam name="T">The type to deserialize the string to.</typeparam>
-        /// <param name="json">The JSON to be deserialized.</param>
-        /// <returns></returns>
+        /// <param name="serializer">Internal <see cref="JsonSerializer" /> to use for serialization</param>
+        public JsonNetSerializer(JsonSerializer serializer) =>
+            _serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+
+        /// <inheritdoc />
+        public string Serialize(object obj)
+        {
+            var sb = new StringBuilder();
+            using var stringWriter = new StringWriter(sb);
+            using var jsonWriter = new JsonTextWriter(stringWriter);
+            _serializer.Serialize(jsonWriter, obj);
+            return sb.ToString();
+        }
+
+        /// <inheritdoc />
         public T Deserialize<T>(string json)
         {
-            return JObject.Parse(json).ToObject<T>();
+            using var stringReader = new StringReader(json);
+            using var jsonReader = new JsonTextReader(stringReader);
+            return _serializer.Deserialize<T>(jsonReader);
         }
     }
 }

@@ -1,5 +1,11 @@
 using System;
 
+#if NET35
+using static JWT.Compatibility.String;
+#else
+using static System.String;
+#endif
+
 namespace JWT
 {
     /// <summary>
@@ -7,12 +13,16 @@ namespace JWT
     /// </summary>
     public sealed class JwtBase64UrlEncoder : IBase64UrlEncoder
     {
-        /// <summary>
-        /// Encode the byte array to a Base64 string.
-        /// </summary>
-        /// <param name="input"></param>
+        /// <inheritdoc />
+        /// <exception cref="ArgumentNullException" />
+        /// <exception cref="ArgumentOutOfRangeException" />
         public string Encode(byte[] input)
         {
+            if (input is null)
+                throw new ArgumentNullException(nameof(input));
+            if (input.Length == 0)
+                throw new ArgumentOutOfRangeException(nameof(input));
+
             var output = Convert.ToBase64String(input);
             output = output.Split('=')[0]; // Remove any trailing '='s
             output = output.Replace('+', '-'); // 62nd char of encoding
@@ -20,13 +30,14 @@ namespace JWT
             return output;
         }
 
-        /// <summary>
-        /// Decode the Base64 string to a byte array.
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
+        /// <inheritdoc />
+        /// <exception cref="ArgumentException" />
+        /// <exception cref="FormatException" />
         public byte[] Decode(string input)
         {
+            if (IsNullOrWhiteSpace(input))
+                throw new ArgumentException(nameof(input));
+
             var output = input;
             output = output.Replace('-', '+'); // 62nd char of encoding
             output = output.Replace('_', '/'); // 63rd char of encoding
@@ -41,7 +52,7 @@ namespace JWT
                     output += "=";
                     break; // One pad char
                 default:
-                    throw new FormatException("Illegal base64url string!");
+                    throw new FormatException("Illegal base64url string.");
             }
             var converted = Convert.FromBase64String(output); // Standard base64 decoder
             return converted;

@@ -7,22 +7,14 @@ namespace JWT.Algorithms
     /// </summary>
     public sealed class HMACSHA512Algorithm : IJwtAlgorithm
     {
-        /// <summary>
-        /// Signs the provided byte array with the provided key.
-        /// </summary>
-        /// <param name="key">The key used to sign the data.</param>
-        /// <param name="bytesToSign">The data to sign.</param>
+        /// <inheritdoc />
         public byte[] Sign(byte[] key, byte[] bytesToSign)
         {
-            using (var sha = new HMACSHA512(key))
-            {
-                return sha.ComputeHash(bytesToSign);
-            }
+            using var sha = new HMACSHA512(key);
+            return sha.ComputeHash(bytesToSign);
         }
 
-        /// <summary>
-        /// The algorithm name.
-        /// </summary>
-        public string Name => JwtHashAlgorithm.HS512.ToString();
+        /// <inheritdoc />
+        public string Name => JwtAlgorithmName.HS512.ToString();
     }
 }

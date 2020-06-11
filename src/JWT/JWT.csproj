@@ -1,41 +1,52 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net35;net40;net46;netstandard1.3;netstandard2.0</TargetFrameworks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net35' OR '$(TargetFramework)' == 'net40' OR '$(TargetFramework)' == 'net46'">
+    <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3' OR '$(TargetFramework)' == 'netstandard2.0'">
+    <TargetFrameworkIdentifier>.NETStandard</TargetFrameworkIdentifier>
+  </PropertyGroup>
+  <PropertyGroup>
+    <FrameworkPathOverride Condition="'$(TargetFramework)' == 'net35'">$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\.NETFramework\v3.5\Profile\Client</FrameworkPathOverride>
+  </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>net35;netstandard1.3</TargetFrameworks>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net35'">
-    <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
-    <DefineConstants>NET35</DefineConstants>
-    <FrameworkPathOverride>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v3.5\Profile\Client</FrameworkPathOverride>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
-    <TargetFrameworkIdentifier>.NETStandard</TargetFrameworkIdentifier>
-    <DefineConstants>NETSTANDARD1_3</DefineConstants>
-  </PropertyGroup>
-  
-  <PropertyGroup>
-    <Company>Public Domain</Company>
     <Copyright>Public Domain</Copyright>
-    <Description>JWT.NET, a JWT (JSON Web Token) implementation for .NET</Description>
-    <RepositoryUrl>https://github.com/jwt-dotnet/jwt</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/jwt-dotnet/jwt</PackageProjectUrl>
-    <Authors>John Sheehan, Michael Lehenbauer, Alexander Batishchev</Authors>
-    <PackageLicenseUrl>https://creativecommons.org/publicdomain/zero/1.0/</PackageLicenseUrl>
-    <Version>3.0.0-beta1</Version>
-    <PackageTags>jwt json</PackageTags>
+    <PackageDescription>Jwt.Net, a JWT (JSON Web Token) implementation for .NET</PackageDescription>
+    <Authors>Alexander Batishchev, John Sheehan, Michael Lehenbauer</Authors>
+    <PackageTags>jwt;json</PackageTags>
+    <PackageLicense>CC0-1.0</PackageLicense>
+    <Version>7.2.1</Version>
+    <FileVersion>7.0.0.0</FileVersion>
+    <AssemblyVersion>7.0.0.0</AssemblyVersion>
+    <RootNamespace>JWT</RootNamespace>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <DocumentationFile>bin\Debug\netstandard1.3\JWT.xml</DocumentationFile>
-    <OutputPath>bin\Debug\netstandard1.3\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>bin\Release\</OutputPath>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+   <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3' OR '$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Security.Cryptography.Csp" Version="4.3.0" />
+    <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 </Project>

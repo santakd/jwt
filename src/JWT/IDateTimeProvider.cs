@@ -3,15 +3,13 @@
 namespace JWT
 {
     /// <summary>
-    /// DateTimeProvider interface.
+    /// Represents a DateTime provider.
     /// </summary>
     public interface IDateTimeProvider
     {
-
         /// <summary>
-        /// Get the current DateTime.
+        /// Gets the current DateTime.
         /// </summary>
-        /// <returns></returns>
-        DateTime GetNow();
+        DateTimeOffset GetNow();
     }
 }
